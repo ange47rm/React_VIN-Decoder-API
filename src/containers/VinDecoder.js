@@ -1,23 +1,28 @@
 import React, {useState, useEffect} from "react"
 import VehicleDetails from "../components/VehicleDetails"
+import Header from "../components/Header"
 
 const VinDecoder = () => {
 
     const [vin, setVin] = useState(''); // the VIN that the user will type in
 
-    const [vehicle, setVehicle] = useState(null); // after the VIN is submitted, vehicle should be set to API response data
+    const [vehicle, setVehicle] = useState(); // after the VIN is submitted, vehicle should be set to API response data
 
     const getVinDetails = () => {
 
         console.log ("Obtaining Vehicle Information")
-        fetch("https://vindecoder.p.rapidapi.com/v2.0/decode_vin?vin=JNKCA31A61T027494", {
-	        "method": "GET",
+        fetch("https://dealerkit.p.rapidapi.com/api/get-vin/?vin=2T1BU4EE5AC248356", {
+            "method": "GET",
             "headers": {
                 "x-rapidapi-key": "6e392890c3msh4a0f4ebf4a64798p16d8c8jsn43752bff9cee",
-                "x-rapidapi-host": "vindecoder.p.rapidapi.com"
-	        }
+                "x-rapidapi-host": "dealerkit.p.rapidapi.com"
+            }
         })
-        .then(response => {console.log(response);})
+        .then(response => response.json())
+        .then(VINdata => {
+            setVehicle(VINdata.specification[0])        // this way we get the info we need (vehicle details) and assign it to the vehicle state
+            console.log(VINdata.specification[0])       // console log to make sure we're fetching the correct data
+        })
         .catch(err => {console.error(err);});
     }
 
@@ -25,11 +30,26 @@ const VinDecoder = () => {
         console.log ("useEffect triggered")
         getVinDetails();},[])
 
-    return (
-        <>
-            <h1>VIN Decoder</h1>
-        </>
-    )
+
+    if (vehicle){
+        return (
+            <>
+                <Header/>
+
+                <p> Yes Vehicle </p>
+            </>
+        )
+    }
+
+    if (!vehicle){
+        return (
+            <>
+                <Header/>
+
+                <p> No Vehicle </p>
+            </>
+        )
+    }
 }
 
 export default VinDecoder;
