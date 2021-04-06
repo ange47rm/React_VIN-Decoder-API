@@ -40,7 +40,7 @@ const VinDecoder = () => {
 
 
     // CONDITIONAL RENDERING
-    if (vehicle) {    
+    if (vehicle && !invalidVin) {    
         return (
                 <>
                     <Header/>
