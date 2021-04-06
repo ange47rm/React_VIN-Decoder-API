@@ -1,15 +1,20 @@
 import React, { useState } from "react"
 
 
-const VinSelector = ({ captureVin }) => {
+const VinSelector = ({ captureVin }) => {       // receive captureVin function from parent component
 
+    // THIS STATE IS USED TO STORE THE USER INPUT ON THIS COMPONENT
     const [inputVin, setInputVin] = useState('');
 
-    const handleVinSubmit = (e) => {
-        e.preventDefault();
-        captureVin(inputVin);
+
+    // FORM SUBMIT HANDLER
+    const handleVinSubmit = (e) => {    // when the form is submitted...
+        e.preventDefault();             // ... prevent the page from being refreshed...
+        captureVin(inputVin);           // ... run captureVin using the inputVin ...
+        e.target.reset();               // ... and finally reset form field.
     } 
 
+    // JSX SYNTAX
     return (
         <>
             <form onSubmit={handleVinSubmit}>

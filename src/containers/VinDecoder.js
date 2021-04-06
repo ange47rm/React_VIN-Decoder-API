@@ -1,11 +1,15 @@
 import React, {useState, useEffect} from "react"
+// import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import VinSelector from "../components/VinSelector"
 import VehicleDetails from "../components/VehicleDetails"
 import Header from "../components/Header"
 
+
 const VinDecoder = () => {
 
-    const [vin, setVin] = useState(''); // the VIN that the user will type in
+    const [vin, setVin] = useState(''); // the VIN that the VinSelector component will "pass up"
+
+    const [invalidVin, setInvalidVin] = useState(false);
 
     const [vehicle, setVehicle] = useState(); // after the VIN is submitted, vehicle should be set to API response data
 
@@ -24,43 +28,44 @@ const VinDecoder = () => {
             setVehicle(VINdata.specification[0])        // this way we get the info we need (vehicle details) and assign it to the vehicle state
             console.log(VINdata.specification[0])       // console log to make sure we're fetching the correct data
         })
-        .catch(err => {console.error(err);});
+        .catch(err =>                   // in case of any error
+            {console.error(err);        // console log the error
+            setInvalidVin(true)});      // set invalidVin to "true"
         }
     }
 
     useEffect(() => {
         console.log ("useEffect triggered")
-        getVinDetails();},[vin])                        // run getVinDetails when vin state changes
+        getVinDetails();},[vin])            // run getVinDetails when vin state changes
 
 
-    // const submitVin = (evt, vin) => 
-    //     {   {evt.preventDefault()}
-    //         {setVin(vin)}}            // we define this function here, which is where we want to receive the VIN back once submitted
-    
-
-        // VIN DOES NOT GET SET
-
-    if (vehicle){
+    // CONDITIONAL RENDERING
+    if (vehicle) {    
+        return (
+                <>
+                    <Header/>
+                    <VinSelector captureVin={bananaVin => setVin(bananaVin)}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
+                    <VehicleDetails vehicle={vehicle}/>
+                </>
+    )} else if (invalidVin) {
         return (
             <>
                 <Header/>
-
-                <p> Yes Vehicle </p>
+                <VinSelector captureVin={bananaVin => setVin(bananaVin)}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
+                <p>The VIN you typed is either invalid or no vehicle information could be found.</p>
             </>
-        )
+    )} else {
+        {
+            return (
+                <>
+                    <Header/>
+                    <VinSelector captureVin={bananaVin => setVin(bananaVin)}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
+                </>
+        )}
     }
-
-    if (!vehicle){
-        return (
-            <>
-                <Header/>
-
-                <VinSelector captureVin={inputVin => setVin(inputVin)}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
-                
-                <p> No Vehicle </p>
-            </>
-        )
-    }
+        
+        
 }
+
 
 export default VinDecoder;
