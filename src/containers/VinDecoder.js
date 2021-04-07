@@ -1,8 +1,11 @@
-import React, {useState, useEffect} from "react"
-// import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import VinSelector from "../components/VinSelector"
-import VehicleDetails from "../components/VehicleDetails"
-import Header from "../components/Header"
+import React, {useState, useEffect} from "react";
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import VinSelector from "../components/VinSelector";
+import Header from "../components/Header";
+import Navbar from "../components/NavBar";
+import About from "../components/About";
+import Contact from "../components/Contact";
+import VinInfo from "../components/VinInfo";
 
 
 const VinDecoder = () => {
@@ -30,42 +33,35 @@ const VinDecoder = () => {
         })
         .catch(err =>                   // in case of any error
             {console.error(err);        // console log the error
-            setInvalidVin(true)});      // set invalidVin to "true"
+            setInvalidVin(true)
+            setVehicle(null)});      // set invalidVin to "true"
         }
     }
 
     useEffect(() => {
-        console.log ("useEffect triggered")
+        console.log ("useEffect triggered")                                                                                                                                     // eslint-disable-next-line
         getVinDetails();},[vin])            // run getVinDetails when vin state changes
 
 
     // CONDITIONAL RENDERING
-    if (vehicle && !invalidVin) {    
-        return (
-                <>
-                    <Header/>
-                    <VinSelector captureVin={bananaVin => setVin(bananaVin)}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
-                    <VehicleDetails vehicle={vehicle}/>
-                </>
-    )} else if (invalidVin) {
-        return (
-            <>
-                <Header/>
-                <VinSelector captureVin={bananaVin => setVin(bananaVin)}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
-                <p>The VIN you typed is either invalid or no vehicle information could be found.</p>
-            </>
-    )} else {
-        {
-            return (
-                <>
-                    <Header/>
-                    <VinSelector captureVin={bananaVin => setVin(bananaVin)}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
-                </>
-        )}
-    }
-        
-        
+    return (
+                <Router>
+                    <>
+                        <Header/>
+                        <Navbar/>
+                        <Switch>
+                            <Route exact path ="/" render={() => <VinSelector vehicle={vehicle} captureVin={bananaVin => setVin(bananaVin)} invalidVin={invalidVin}/>}/>  {/* the form submission will trigger the function, and pass the inserted vin as a parameter */}
+                            <Route path="/about" component={About}/>
+                            <Route path="/contact" component={Contact}/>
+                            <Route path="/vin-information" component={VinInfo}/>
+                        </Switch>
+                    </>
+                </Router>
+        )
 }
+        
+
+
 
 
 export default VinDecoder;
